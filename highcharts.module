@@ -48,7 +48,7 @@ function highcharts_get_data(array $labels, array $data, $options = array()) {
       'text' => '', // 图表子名称
     ),
     'xAxis' => array(
-      'categories' => array(), // x 轴的项目，即 $header
+      'categories' => array(), // x 轴的项目，即 $labels
     ),
     'yAxis' => array(
       'title' => array(
@@ -61,7 +61,7 @@ function highcharts_get_data(array $labels, array $data, $options = array()) {
     'tooltip' => array( // 启用悬停提示
       'formatter' => ":::code:::function() {return '<strong>'+this.series.name+'</strong><br/><strong>'+this.x +'</strong>: '+ this.y;}"
     ),
-//    'legend' => array( // $header 显示布局设置
+//    'legend' => array( // $labels 显示布局设置
 //      'layout' => 'vertical',
 //      'align' => 'right',
 //      'verticalAlign' => 'top',
@@ -69,7 +69,7 @@ function highcharts_get_data(array $labels, array $data, $options = array()) {
 //      'y' => 100,
 //      'borderWidth' => 0
 //    ),
-    'series' => array( // 表格数据，对应 $table 中的每一行
+    'series' => array( // 表格数据，对应 $data 中的每一行
       //array(
       //  'name' => '', // 每行的第一个单元格
       //  'data' => array(),
@@ -82,11 +82,11 @@ function highcharts_get_data(array $labels, array $data, $options = array()) {
     unset($options['type']);
   }
 
-  foreach ($header as $name) {
+  foreach ($labels as $name) {
     $default['xAxis']['categories'][] = $name;
   }
 
-  foreach ($table as $rows) {
+  foreach ($data as $rows) {
     $data = array();
     if (!empty($rows['options']) && is_array($rows['options'])) {
       $data = $rows['options'];
