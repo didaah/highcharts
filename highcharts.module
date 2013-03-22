@@ -1,0 +1,141 @@
+<?php
+// $Id$
+
+// public highcharts_get_data(array $labels, array $data, $options = array()) {{{ 
+/**
+ * highcharts_get_data
+ * 获取 highcharts 图表，基本曲线图示例：
+ * $data = highcharts_get_data(
+ *  array('1 月', '2 月', '3 月', '4 月', '5 月', '6 月'),
+ *  array(
+ *    array('广东' 235, 245, 255, 265, 275, 285),
+ *    array('北京' 211, 223, 246, 26, 235, 267),
+ *    array('上海' 211, 223, 246, 26, 235, 267),
+ *  ),
+ * );
+ *
+ * return $data['html'];
+ *
+ * 更多用法参见：http://www.highcharts.com/demo/line-basic 
+ * 
+ * @param array $labels 
+ *  x 坐标分类名称，即 xAxis.categories = {}
+ * @param array $data 
+ *  显示数据，即 series
+ * @param array $options 
+ * @access public
+ * @return array
+ */
+function highcharts_get_data(array $labels, array $data, $options = array()) {
+  static $i;
+
+  if (!isset($i)) {
+    $i = 0;
+    dd_add_js(dd_get_path('module', 'highcharts') . '/highcharts/highcharts.js');
+    dd_add_js(dd_get_path('module', 'highcharts') . '/highcharts/modules/exporting.js');
+    dd_add_js('Dida.module.highcharts.chart = {}', 'inline_nojq');
+  }
+
+  $default = array(
+    'chart' => array(
+      'renderTo' => 'dida_highcharts_container_wrapper_' . $i,
+      'type' => 'line', // 图表类型
+    ),
+    'title' => array(
+      'text' => '', // 图表名称
+    ),
+    'subtitle' => array(
+      'text' => '', // 图表子名称
+    ),
+    'xAxis' => array(
+      'categories' => array(), // x 轴的项目，即 $header
+    ),
+    'yAxis' => array(
+      'title' => array(
+        'text' => '', // y 轴名称
+      )
+    ),
+    'exporting' => array(
+      'enabled' => ':::code:::false'
+    ),
+    'tooltip' => array( // 启用悬停提示
+      'formatter' => ":::code:::function() {return '<strong>'+this.series.name+'</strong><br/><strong>'+this.x +'</strong>: '+ this.y;}"
+    ),
+//    'legend' => array( // $header 显示布局设置
+//      'layout' => 'vertical',
+//      'align' => 'right',
+//      'verticalAlign' => 'top',
+//      'x' => -10,
+//      'y' => 100,
+//      'borderWidth' => 0
+//    ),
+    'series' => array( // 表格数据，对应 $table 中的每一行
+      //array(
+      //  'name' => '', // 每行的第一个单元格
+      //  'data' => array(),
+      //),
+    ) 
+  );
+
+  if (!empty($options['type'])) {
+    $default['chart']['type'] = $options['type'];
+    unset($options['type']);
+  }
+
+  foreach ($header as $name) {
+    $default['xAxis']['categories'][] = $name;
+  }
+
+  foreach ($table as $rows) {
+    $data = array();
+    if (!empty($rows['options']) && is_array($rows['options'])) {
+      $data = $rows['options'];
+      unset($rows['options']);
+    }
+    $data['name'] = array_shift($rows);
+    $data['data'] = array();
+    foreach ($rows as $value) {
+      if (is_array($value)) {
+        $data['data'][] = $value;
+      } else {
+        $data['data'][] = ':::code:::' . $value;
+      }
+    }
+    $default['series'][] = $data;
+  }
+
+  if (!empty($options)) {
+    foreach ($options as $key => $value) {
+      if (!empty($default[$key]) && is_array($default[$key])) {
+        $default[$key] = array_merge($default[$key], $value);
+      } else {
+        $default[$key] = $value;
+      }
+    }
+  }
+
+  $i++;
+  
+  $js_var = 'Dida.module.highcharts.chart["' . (empty($options['index_key']) ? $i : $options['index_key']) . '"]';
+  $jv = 'Dida.module.highcharts.chart["' . (empty($options['index_key']) ? $i : $options['index_key']) . 'hide"]';
+
+  $html = '<div id="' . $default['chart']['renderTo'] . '" class="dida_highcharts_container_wrapper"';
+  if (!empty($options['style'])) $html .= ' style="' . $options['style'] . '"';
+  $html .= '></div>';
+  $html .= '<script type="text/javascript">';
+  $html .= '$(document).ready(function() {';
+  $html .= $jv . ' = {};';
+  $html .= $js_var .' = new Highcharts.Chart(' . dd_to_js($default) . ');';
+  if (!empty($options['series_hide'])) {
+    foreach ($options['series_hide'] as $id) {
+      $html .= $jv . '["' . $id . '"] = ' . $js_var . '.series[' . $id . '];';
+      $html .= $jv . '["' . $id . '"].hide();';
+    }
+  }
+  $html .= '});';
+  $html .= '</script>';
+
+  return array('html' => $html, 'jv' => $js_var);
+}
+// }}}
+
