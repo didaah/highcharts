@@ -82,26 +82,30 @@ function highcharts_get_data(array $labels, array $data, $options = array()) {
     unset($options['type']);
   }
 
-  foreach ($labels as $name) {
-    $default['xAxis']['categories'][] = $name;
+  if (!empty($labels)) {
+    foreach ($labels as $name) {
+      $default['xAxis']['categories'][] = $name;
+    }
   }
 
-  foreach ($data as $rows) {
-    $data = array();
-    if (!empty($rows['options']) && is_array($rows['options'])) {
-      $data = $rows['options'];
-      unset($rows['options']);
-    }
-    $data['name'] = array_shift($rows);
-    $data['data'] = array();
-    foreach ($rows as $value) {
-      if (is_array($value)) {
-        $data['data'][] = $value;
-      } else {
-        $data['data'][] = ':::code:::' . $value;
+  if (!empty($data)) {
+    foreach ($data as $rows) {
+      $data = array();
+      if (!empty($rows['options']) && is_array($rows['options'])) {
+        $data = $rows['options'];
+        unset($rows['options']);
       }
+      $data['name'] = array_shift($rows);
+      $data['data'] = array();
+      foreach ($rows as $value) {
+        if (is_array($value)) {
+          $data['data'][] = $value;
+        } else {
+          $data['data'][] = ':::code:::' . $value;
+        }
+      }
+      $default['series'][] = $data;
     }
-    $default['series'][] = $data;
   }
 
   if (!empty($options)) {
