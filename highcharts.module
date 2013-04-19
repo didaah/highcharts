@@ -69,12 +69,12 @@ function highcharts_get_data(array $labels, array $data, $options = array()) {
 //      'y' => 100,
 //      'borderWidth' => 0
 //    ),
-    'series' => array( // 表格数据，对应 $data 中的每一行
+//    'series' => array( // 表格数据，对应 $data 中的每一行
       //array(
       //  'name' => '', // 每行的第一个单元格
       //  'data' => array(),
       //),
-    ) 
+//    ) 
   );
 
   if (!empty($options['type'])) {
