@@ -37,6 +37,10 @@ function highcharts_get_data(array $labels, array $data, $options = array()) {
     dd_add_js('Dida.module.highcharts.chart = {}', 'inline_nojq');
   }
 
+  if (!empty($options['theme'])) {
+    dd_add_js(dd_get_path('module', 'highcharts') . '/highcharts/themes/' . $options['theme'] . '.js');
+  }
+
   if (empty($labels) || empty($data)) return false;
 
   $default = array(
