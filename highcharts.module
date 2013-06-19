@@ -32,9 +32,12 @@ function highcharts_get_data(array $labels, array $data, $options = array()) {
   if (!isset($i)) {
     $i = 0;
     dd_add_js(dd_get_path('module', 'highcharts') . '/highcharts/highcharts.js');
+    dd_add_js(dd_get_path('module', 'highcharts') . '/highcharts/highcharts-more.js');
     dd_add_js(dd_get_path('module', 'highcharts') . '/highcharts/modules/exporting.js');
     dd_add_js('Dida.module.highcharts.chart = {}', 'inline_nojq');
   }
+
+  if (empty($labels) || empty($data)) return false;
 
   $default = array(
     'chart' => array(
@@ -122,15 +125,18 @@ function highcharts_get_data(array $labels, array $data, $options = array()) {
   
   $js_var = 'Dida.module.highcharts.chart["' . (empty($options['index_key']) ? $i : $options['index_key']) . '"]';
   $jv = 'Dida.module.highcharts.chart["' . (empty($options['index_key']) ? $i : $options['index_key']) . 'hide"]';
-  
-  $html = '<div id="' . $default['chart']['renderTo'] . '" class="dida_highcharts_container_wrapper"';
+
+  $renderTo = $default['chart']['renderTo'];
+  unset($default['chart']['renderTo']);
+
+  $html = '<div id="' . $renderTo . '" class="dida_highcharts_container_wrapper"';
   if (!empty($options['style'])) $html .= ' style="' . $options['style'] . '"';
   $html .= '></div>';
   $html .= '<script type="text/javascript">';
   $html .= '$(document).ready(function() {';
   $html .= $jv . ' = {};';
-  $html .= '$("#' . $default['chart']['renderTo'] . '").highcharts(' . dd_to_js($default) . ');';
-  $html .= $js_var .' = $("#' . $default['chart']['renderTo'] . '").highcharts();';
+  $html .= '$("#' . $renderTo . '").highcharts(' . dd_to_js($default) . ');';
+  $html .= $js_var .' = $("#' . $renderTo . '").highcharts();';
   if (!empty($options['series_hide'])) {
     foreach ($options['series_hide'] as $id) {
       $html .= $jv . '["' . $id . '"] = ' . $js_var . '.series[' . $id . '];';
