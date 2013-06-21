@@ -41,7 +41,7 @@ function highcharts_get_data(array $labels, array $data, $options = array()) {
     dd_add_js(dd_get_path('module', 'highcharts') . '/highcharts/themes/' . $options['theme'] . '.js');
   }
 
-  if (empty($labels) || empty($data)) return false;
+  if (empty($labels)) return false;
 
   $default = array(
     'chart' => array(
@@ -62,9 +62,9 @@ function highcharts_get_data(array $labels, array $data, $options = array()) {
         'text' => '', // y 轴名称
       )
     ),
-    'exporting' => array(
-      'enabled' => ':::code:::false'
-    ),
+//    'exporting' => array(
+//      'enabled' => ':::code:::false'
+//    ),
     'tooltip' => array( // 启用悬停提示
       'formatter' => ":::code:::function() {return '<strong>'+this.series.name+'</strong><br/><strong>'+this.x +'</strong>: '+ this.y;}"
     ),
