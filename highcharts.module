@@ -49,19 +49,8 @@ function highcharts_get_data(array $labels, array $data, $options = array()) {
       'renderTo' => 'dida_highcharts_container_wrapper_' . $i,
       'type' => 'line', // 图表类型
     ),
-    'title' => array(
-      'text' => '', // 图表名称
-    ),
-    'subtitle' => array(
-      'text' => '', // 图表子名称
-    ),
     'xAxis' => array(
       'categories' => array(), // x 轴的项目，即 $labels
-    ),
-    'yAxis' => array(
-      'title' => array(
-        'text' => '', // y 轴名称
-      )
     ),
    'exporting' => array(
      'enabled' => ':::code:::false'
@@ -124,6 +113,20 @@ function highcharts_get_data(array $labels, array $data, $options = array()) {
         $default[$key] = $value;
       }
     }
+  }
+
+  if (empty($default['title'])) {
+    $default['title'] = array(
+      'text' => '', // 图表名称
+    );
+  }
+ 
+  if (empty($default['yAxis'])) {
+    $default['yAxis'] = array(
+      'title' => array(
+        'text' => '', // y 轴名称
+      )
+    );
   }
 
   $i++;
