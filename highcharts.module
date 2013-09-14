@@ -44,6 +44,7 @@ function highcharts_get_data(array $labels, array $data, $options = array()) {
   if (empty($labels)) return false;
 
   $default = array(
+    //'stock' => 1, // 使用 stock
     'chart' => array(
       'renderTo' => 'dida_highcharts_container_wrapper_' . $i,
       'type' => 'line', // 图表类型
@@ -65,9 +66,9 @@ function highcharts_get_data(array $labels, array $data, $options = array()) {
    'exporting' => array(
      'enabled' => ':::code:::false'
     ),
-    'tooltip' => array( // 启用悬停提示
+//    'tooltip' => array( // 启用悬停提示
       //'formatter' => ":::code:::function() { return '<strong>'+this.series.name+'</strong><br/><strong>'+this.x +'</strong>: '+ this.y;}"
-    ),
+//    ),
 //    'legend' => array( // $labels 显示布局设置
 //      'layout' => 'vertical',
 //      'align' => 'right',
