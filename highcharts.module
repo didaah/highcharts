@@ -133,17 +133,20 @@ function highcharts_get_data(array $labels, array $data, $options = array()) {
   
   $js_var = 'Dida.module.highcharts.chart["' . (empty($options['index_key']) ? $i : $options['index_key']) . '"]';
   $jv = 'Dida.module.highcharts.chart["' . (empty($options['index_key']) ? $i : $options['index_key']) . 'hide"]';
+  $js = dd_to_js($default);
 
   $renderTo = $default['chart']['renderTo'];
   unset($default['chart']['renderTo']);
 
   $html = '<div id="' . $renderTo . '" class="dida_highcharts_container_wrapper"';
-  if (!empty($options['style'])) $html .= ' style="' . $options['style'] . '"';
+  if (!empty($options['style'])) {
+    $html .= ' style="' . $options['style'] . '"';
+  }
   $html .= '></div>';
   $html .= '<script type="text/javascript">';
   $html .= '$(document).ready(function() {';
   $html .= $jv . ' = {};';
-  $html .= '$("#' . $renderTo . '").highcharts(' . dd_to_js($default) . ');';
+  $html .= '$("#' . $renderTo . '").highcharts(' . $js . ');';
   $html .= $js_var .' = $("#' . $renderTo . '").highcharts();';
   if (!empty($options['series_hide'])) {
     foreach ($options['series_hide'] as $id) {
@@ -154,7 +157,7 @@ function highcharts_get_data(array $labels, array $data, $options = array()) {
   $html .= '});';
   $html .= '</script>';
 
-  return array('html' => $html, 'jv' => $js_var);
+  return array('html' => $html, 'jv' => $js_var, 'js' => $js);
 }
 // }}}
 
